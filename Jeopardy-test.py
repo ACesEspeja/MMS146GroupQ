@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 import json
 import os
+import random
         
 class Question:
     """
@@ -56,7 +57,7 @@ class AbstractPlayer(ABC):
         pass
 
     @abstractmethod
-    def load_highschores(self):
+    def load_highscores(self):
         pass
 
 class Player(AbstractPlayer):
@@ -67,7 +68,7 @@ class Player(AbstractPlayer):
 
     def __init__(self, player_name="Anonymous"):
         self.__player_name = player_name            #Private
-        self.__save_file = "highschores.json"
+        self.__save_file = "highscores.json"
 
     def get_name(self):
         """Return the name of the player"""
@@ -77,42 +78,45 @@ class Player(AbstractPlayer):
         """Updates the name of the player"""
         if new_name and new_name.strip():
             self.__player_name = new_name.strip()
+                
+    def set_score(self, score):
+        """Sets the score"""
+        self.save_score(score)
 
 # File handling
 
-def save_score(self, score):
-    """Save the player's score to a file (in JSON format)"""
-    highscores = []
+    def save_score(self, score):
+       """Save the player's score to a file (in JSON format)"""
+       highscores = []
 
-    if os.path.exists(self._save_file):
-        with open(self.__save_file, "r") as f:
-            try:
-                highscores = json.load(f)
-            except json.JSONDecodeError:
-                highscores = []
+       if os.path.exists(self._save_file):
+           with open(self.__save_file, "r") as f:
+               try:
+                   highscores = json.load(f)
+               except json.JSONDecodeError:
+                   highscores = []
 
     # Add new score entry
-    highscores.append({"name": self.__player_name, "score": score})
+       highscores.append({"name": self.__player_name, "score": score})
 
     # Sorting of scores
-    highscores = sorted(highscores, key=lambda x: x["score"], reverse=True)[:10]
+       highscores = sorted(highscores, key=lambda x: x["score"], reverse=True)[:10]
 
-    with open(self.__save_file, "w") as f:
-        json.dump(highscores, f, indent=4)
+       with open(self.__save_file, "w") as f:
+           json.dump(highscores, f, indent=4)
 
-    def load highscores(self):
-    """Load and return highscores from file"""
-    if os.path.exists(self.__save_file):
+    def load_highscores(self):
+        """Load and return highscores from file"""
+        if os.path.exists(self.__save_file):
             with open(self.__save_file, "r") as f:
                 try:
                     return json.load(f)
                 except json.JSONDecodeError:
                     return []
-        return []
 
     def display_highscores(self):
         """Print the leaderboard"""
-        highschores = self.load_highscores()
+        highscores = self.load_highscores()
         if not highscores:
             print("\nNo high scores yet. Be the first to set one!")
             return
@@ -414,5 +418,6 @@ def main():
 if __name__ == "__main__":
 
     main()
+
 
 
