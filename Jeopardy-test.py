@@ -76,7 +76,7 @@ class Player(AbstractPlayer):
     def set_name(self, new_name):
         """Updates the name of the player"""
         if new_name and new_name.strip():
-            self.))player_name = new_name.strip()
+            self.__player_name = new_name.strip()
 
 # File handling
 
@@ -85,9 +85,9 @@ def save_score(self, score):
     highscores = []
 
     if os.path.exists(self._save_file):
-        with open(self.__sabe_file, "r") as f:
+        with open(self.__save_file, "r") as f:
             try:
-                highschores = json.load(f)
+                highscores = json.load(f)
             except json.JSONDecodeError:
                 highscores = []
 
@@ -100,7 +100,7 @@ def save_score(self, score):
     with open(self.__save_file, "w") as f:
         json.dump(highscores, f, indent=4)
 
-    def load highschores(self):
+    def load highscores(self):
     """Load and return highscores from file"""
     if os.path.exists(self.__save_file):
             with open(self.__save_file, "r") as f:
@@ -414,4 +414,5 @@ def main():
 if __name__ == "__main__":
 
     main()
+
 
