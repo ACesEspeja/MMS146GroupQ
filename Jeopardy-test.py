@@ -1,3 +1,7 @@
+from abc import ABC, abtractmethod
+import json
+import os
+        
 class Question:
     """
     Question class that represents a single trivia question
@@ -36,34 +40,86 @@ class Question:
         return self.__points
 
 
-class Player:
+class AbstractPlayer(ABC):
+    """Abstract base class for each player"""
+
+    @abstractmethod
+    def get_name(self):
+        pass
+
+    @abstractmethod
+    def set_name(self, new_name):
+        pass
+
+    @abstractmethod
+    def set_score(self, score):
+        pass
+
+    @abstractmethod
+    def load_highschores(self):
+        pass
+
+class Player(AbstractPlayer):
     """
-    Player class that represents a game participant
+    Player class that represents a game participant.
+    Handles saving/loading of the scores and preferences.
     """
-    
+
     def __init__(self, player_name="Anonymous"):
-        """
-        Initialize Player with a name.
-        
-        Args:
-            player_name (str): Name of the player
-        """
-        self.__player_name = player_name  # Private attribute
-    
+        self.__player_name = player_name            #Private
+        self.__save_file = "highschores.json"
+
     def get_name(self):
         """Return the name of the player"""
         return self.__player_name
-    
-    def set_name(self, new_name):
-        """
-        Update the name of the player.
-        
-        Args:
-            new_name (str): New name for the player
-        """
-        if new_name and new_name.strip():
-            self.__player_name = new_name.strip()
 
+    def set_name(self, new_name):
+        """Updates the name of the player"""
+        if new_name and new_name.strip():
+            self.))player_name = new_name.strip()
+
+# File handling
+
+def save_score(self, score):
+    """Save the player's score to a file (in JSON format)"""
+    highscores = []
+
+    if os.path.exists(self._save_file):
+        with open(self.__sabe_file, "r") as f:
+            try:
+                highschores = json.load(f)
+            except json.JSONDecodeError:
+                highscores = []
+
+    # Add new score entry
+    highscores.append({"name": self.__player_name, "score": score})
+
+    # Sorting of scores
+    highscores = sorted(highscores, key=lambda x: x["score"], reverse=True)[:10]
+
+    with open(self.__save_file, "w") as f:
+        json.dump(highscores, f, indent=4)
+
+    def load highschores(self):
+    """Load and return highscores from file"""
+    if os.path.exists(self.__save_file):
+            with open(self.__save_file, "r") as f:
+                try:
+                    return json.load(f)
+                except json.JSONDecodeError:
+                    return []
+        return []
+
+    def display_highscores(self):
+        """Print the leaderboard"""
+        highschores = self.load_highscores()
+        if not highscores:
+            print("\nNo high scores yet. Be the first to set one!")
+            return
+
+        print("\n=== HIGH SCORES ===")
+        for i, entry in enumerate(highscores, 1):
+            print(f"{i}. {entry['name']} - {entry['score']} pts")
 
 class QuizGame:
     """
@@ -356,4 +412,5 @@ def main():
 
 
 if __name__ == "__main__":
+
     main()
