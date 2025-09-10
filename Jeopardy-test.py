@@ -6,9 +6,25 @@ import os
 # Question Class
 # -------------------------
 class Question:
-    """Represents a single Jeopardy-style question."""
+    """Represents a single Jeopardy-style question.
+
+    Attributes:
+    text (str): The question text.
+    answer (str): The correct answer.
+    points (int): Score awarded for a correct answer.
+    difficulty (int): Difficulty level (1 = easiest).
+    asked (bool): Whether the question has already been asked.
+    """
 
     def __init__(self, text, answer, points=100, difficulty=1):
+        """Initialize a Question.
+
+        Args:
+        text (str): The question prompt.
+        answer (str): The correct answer.
+        points (int, optional): Score value. Defaults to 100.
+        difficulty (int, optional): Difficulty rating. Defaults to 1.
+        """
         self.__text = text
         self.__answer = answer
         self.__points = points
@@ -16,15 +32,19 @@ class Question:
         self.__asked = False
 
     def get_text(self):
+        """Return the question text."""
         return self.__text
 
     def get_answer(self):
+        """Return the correct answer."""
         return self.__answer
 
     def get_points(self):
+        """Return the point value of the question."""
         return self.__points
 
     def get_difficulty(self):
+        """Return the difficulty rating."""
         return self.__difficulty
 
     def mark_asked(self):
@@ -48,16 +68,24 @@ class AbstractPlayer(ABC):
     """Abstract base class for players."""
 
     @abstractmethod
-    def get_name(self): pass
+    def get_name(self): 
+        """Return player name."""
+        pass
 
     @abstractmethod
-    def set_name(self, new_name): pass
+    def set_name(self, new_name): 
+        """Update player name."""
+        pass
 
     @abstractmethod
-    def set_score(self, score): pass
+    def set_score(self, score): 
+        """Set player score."""
+        pass
 
     @abstractmethod
-    def load_highscores(self): pass
+    def load_highscores(self): 
+        """Load leaderboard from storage."""
+        pass
 
 
 # -------------------------
@@ -72,13 +100,16 @@ class Player(AbstractPlayer):
         self.__score = 0
 
     def get_name(self):
+        """Return player name."""
         return self.__player_name
 
     def set_name(self, new_name):
+        """Update the player's name if not empty."""
         if new_name and new_name.strip():
             self.__player_name = new_name.strip()
 
     def get_score(self):
+        """Return the player's current score."""
         return self.__score
 
     def update_score(self, delta):
@@ -87,10 +118,12 @@ class Player(AbstractPlayer):
             self.__score += delta
 
     def set_score(self, score):
+        """Set the player's score and save it to leaderboard."""
         self.__score = score
         self.save_score(score)
 
     def save_score(self, score):
+        """Save the current score to the highscores file."""
         highscores = []
         if os.path.exists(self.__save_file):
             with open(self.__save_file, "r") as f:
@@ -106,6 +139,7 @@ class Player(AbstractPlayer):
             json.dump(highscores, f, indent=4)
 
     def load_highscores(self):
+        """Load highscores from file."""
         if os.path.exists(self.__save_file):
             with open(self.__save_file, "r") as f:
                 try:
@@ -115,6 +149,7 @@ class Player(AbstractPlayer):
         return []
 
     def display_highscores(self):
+        """Display the top scores in a leaderboard format."""
         highscores = self.load_highscores()
         if not highscores:
             print("\nNo high scores yet. Be the first to set one!")
@@ -134,14 +169,17 @@ class QuestionBank:
         self.categories = {}
 
     def add_question(self, category, question):
+        """Add a question to a category."""
         if category not in self.categories:
             self.categories[category] = []
         self.categories[category].append(question)
 
     def get_questions_by_category(self, category):
+        """Return sorted questions in a category by difficulty."""
         return sorted(self.categories.get(category, []), key=lambda q: q.get_difficulty())
 
     def get_unasked_questions(self, category):
+        """Return all unasked questions in a category."""
         return [q for q in self.categories.get(category, []) if not q.is_asked()]
 
 
@@ -149,6 +187,7 @@ class QuestionBank:
 # Setup Questions
 # -------------------------
 def setup_question_bank():
+    """Creates and fills a QuestionBank with categories and questions."""
     qb = QuestionBank()
     money_values = {1: 100, 2: 200, 3: 300, 4: 400, 5: 500}
 
@@ -173,7 +212,7 @@ def setup_question_bank():
     qb.add_question("Celebrities", Question("Which actress and model became the first Asian to win Miss World in 2013?", "Megan Young", money_values[4], 4))
     qb.add_question("Celebrities", Question("What is the full name of Regine Velasquez, Asia's Songbird?", "Regina Encarnacion Ansong Velasquez-Alcasid", money_values[5], 5))
 
-    # Ailices – OPM Hits
+    # Aili – OPM Hits
     qb.add_question("OPM Hits", Question("Jose Mari Chan’s ultimate holiday classic.", "Christmas In Our Hearts", money_values[1], 1))
     qb.add_question("OPM Hits", Question("This P-pop boy group became the first Filipino act nominated for the Billboard Music Awards.", "SB19", money_values[2], 2))
     qb.add_question("OPM Hits", Question("Broadway and Disney star who became a Tony Award winner.", "Lea Salonga", money_values[3], 3))
@@ -251,3 +290,4 @@ def play_game():
 # -------------------------
 if __name__ == "__main__":
     play_game()
+
